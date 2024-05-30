@@ -1,25 +1,25 @@
 const TeamMember = require('../models/teamModel');
 const logger = require('../logger/logger');
 
-const getTeamMember = async (req, res) => {
+const getTeamMember = async (req, res, next) => {
   const { id } = req.params;
 
   try {
     const teamMember = await TeamMember.findOne({id:id});
 
     if (!teamMember) {
-      return res.status(404).json({ message: `Team member ${id} not found` });
+	  res.sendError({ message: `Team member ${id} not found`, statusCode: 404 });
+      return;
     }
 
-    res.status(200).json(teamMember);
+	res.sendResponse(teamMember);
 	logger.info(`Got team member ${id} successfuly`);
   } catch (error) {
-	logger.error(`Error getting team members ${id}: ${error.message}`);
-    res.status(500).json({ message: error.message });
+	res.sendError({ message: `Error getting team members ${id}: ${error.message}`, statusCode: 500 });
   }
 };
 
-const getAllTeamMembers = async (req, res) => {
+const getAllTeamMembers = async (req, res, next) => {
 	
 	try{
 		const { page = 1, limit = 10 } = req.query;
@@ -43,32 +43,28 @@ const getAllTeamMembers = async (req, res) => {
 		  .limit(limitNumber)
 		  .exec();
 
-		res.status(200).json(results);
+		res.sendResponse(results);
 		logger.info('Got all team members successful');    
   } catch (error) {
-	logger.error(`Error getting team members: ${error.message}`);
-    res.status(500).json({ message: error.message });
+	res.sendError({ message: `Error getting team members: ${error.message}`, statusCode: 500 });
   }
 };
 
-const addTeamMember = async (req, res) => {
+const addTeamMember = async (req, res, next) => {
 
   try {
     const newTeamMember = new TeamMember(req.body);
 
     await newTeamMember.save();
-    res.status(201).json(newTeamMember);
+	
+    res.sendResponse(newTeamMember,201);
 	logger.info('Added new team member successfuly:',JSON.stringify(newTeamMember));
-  } catch (error) {
-	logger.error(`Error while adding team member: ${error.message}`);
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ message: error.message });
-    }
-    res.status(500).json({ message: error.message });
+  } catch (error) {	
+	res.sendError({ message: `Error while adding team member: ${error.message}`, statusCode: 500 });
   }
 };
 
-const editTeamMember = async (req, res) => {
+const editTeamMember = async (req, res, next) => {
   const { id } = req.params;
   const updates = req.body;
 
@@ -79,37 +75,32 @@ const editTeamMember = async (req, res) => {
     });
 
     if (!updatedTeamMember) {
-	  logger.error(`Team member ${id} not found`);
-      return res.status(404).json({ message: 'Team member not found' });
+	  res.sendError({ message: `Team member ${id} not found`, statusCode: 404 });
+      return;
     }
 
-    res.status(201).json(updatedTeamMember);
+    res.sendResponse(updatedTeamMember,201);
 	logger.info('Updated team member successfuly:',JSON.stringify(updatedTeamMember));
   } catch (error) {
-	logger.error(`Error while updating team member ${id}: ${error.message}`);
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ message: error.message });
-    }
-    res.status(500).json({ message: error.message });
+    res.sendError({ message: `Error while updating team member ${id}: ${error.message}`, statusCode: 500 });
   }
 };
 
-const deleteTeamMember = async (req, res) => {
+const deleteTeamMember = async (req, res, next) => {
   const { id } = req.params;
 
   try {
     const deletedTeamMember = await TeamMember.findOneAndDelete({id:id});
 
     if (!deletedTeamMember) {
-	  logger.error(`Team member ${id} not found`);
-      return res.status(404).json({ message: 'Team member not found' });
+		res.sendError({ message: `Team member ${id} not found`, statusCode: 404 });
+		return;
     }
 
-    res.status(204).send();
+    res.sendResponse({},204);
 	logger.info(`Deleted team member ${id} successfuly`);
   } catch (error) {
-	logger.error(`Error while deleting team member ${id}: ${error.message}`);
-    res.status(500).json({ message: error.message });
+	res.sendError({ message: `Error while deleting team member ${id}: ${error.message}`, statusCode: 500 });
   }
 };
 

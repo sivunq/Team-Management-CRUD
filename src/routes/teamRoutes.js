@@ -9,10 +9,10 @@ const {
 
 const router = express.Router();
 
-router.get('/:id', getTeamMember);
-router.get('/', getAllTeamMembers);
-router.post('/', addTeamMember);
-router.put('/:id', editTeamMember);
-router.delete('/:id', deleteTeamMember);
+router.get('/members/:id', getTeamMember);
+router.get('/members/', getAllTeamMembers);
+router.post('/members/', addTeamMember);
+router.put('/members/:id', editTeamMember);
+router.delete('/members/:id', deleteTeamMember);
 
 module.exports = router;

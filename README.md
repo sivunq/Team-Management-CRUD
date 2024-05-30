@@ -39,16 +39,16 @@ You can use tools like Postman or cURL to test the endpoints:
 
 1. Get one team member:
     ```
-    curl --location 'http://localhost:3000/api/members/f677e37d-906b-4c54-980e-7501463b2734'
+    curl --location 'http://localhost:3000/api/v1/members/f677e37d-906b-4c54-980e-7501463b2734'
     ```
 
 2. Get all team members with pagination:
     ```
-    curl --location 'http://localhost:3000/api/members/?page=1&limit=10'
+    curl --location 'http://localhost:3000/api/v1/members/?page=1&limit=10'
     ```
 3. Add a team member:
     ```
-    curl --location 'http://localhost:3000/api/members/' \
+    curl --location 'http://localhost:3000/api/v1/members/' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "firstName":"test",
@@ -60,7 +60,7 @@ You can use tools like Postman or cURL to test the endpoints:
     ```
 4. Edit a team member:
     ```
-       curl --location --request PUT 'http://localhost:3000/api/members/665701bc75366770d40e4b52' \
+       curl --location --request PUT 'http://localhost:3000/api/v1/members/665701bc75366770d40e4b52' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "firstName":"test",
@@ -72,13 +72,26 @@ You can use tools like Postman or cURL to test the endpoints:
     ```
 5. Delete a team member:
     ```
-    curl --location --request DELETE 'http://localhost:3000/api/members/665701bc75366770d40e4b52'
+    curl --location --request DELETE 'http://localhost:3000/api/v1/members/665701bc75366770d40e4b52'
+    ```
+5. Health Check :
+    ```
+    curl --location 'http://localhost:3000/api/health'
     ```
 
 ### Additional Functionalities:
 
 1. Input validation
-2. Logging
-3. Rate Limiting 
+2. Logging : Logs and Exceptions will be added to a log file under logs folder.
+3. Rate Limiting: user can send only 10 requests in a span of 5 minutes.Otherwise http-429 is thrown.
+4. Pagination for get all team memebers api.
+5. Health Check end point, which returns current project version.
+6. Middleware for centralized response handling.
+
+### Future Scopes:
+1. Add user authentication & authorization.
+2. Deployment & CI/CD, Monitoring, Containerization.
+3. Automated Testing. 
+4. Graceful Shutdown.
     
 
